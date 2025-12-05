@@ -4,6 +4,9 @@
 #include "ast.h"
 #include "table.h"
 
+/* =========================
+ * Conversor types_t ↔ Tipo
+ * ========================= */
 
 /* Converte types_t (da AST) para Tipo (da tabela de símbolos) */
 Tipo ast_type_to_table_type(types_t ast_type);
@@ -11,12 +14,17 @@ Tipo ast_type_to_table_type(types_t ast_type);
 /* Converte Tipo (da tabela) para types_t (da AST) */
 types_t table_type_to_ast_type(Tipo table_type);
 
+/* =========================
+ * Análise Semântica Principal
+ * ========================= */
 
 /* Analisa semanticamente o programa completo
  * Retorna 0 se não houver erros, -1 caso contrário */
 int semantic_analysis(program_t *program);
 
-
+/* =========================
+ * Análise de Declarações
+ * ========================= */
 
 /* Processa declarações globais (variáveis e funções) */
 int analyze_global_declarations(global_decl_t *globals, TableNode **scope);
@@ -27,9 +35,12 @@ int analyze_function(global_decl_t *func_decl, TableNode **scope);
 /* Processa declarações locais dentro de um bloco */
 int analyze_local_declarations(local_decl_t *locals, TableNode *scope);
 
+/* =========================
+ * Análise de Comandos
+ * ========================= */
 
 /* Analisa um bloco (cria novo escopo, processa locais e comandos) */
-int analyze_block(block_t *block, TableNode **scope);
+int analyze_block(block_t *block, TableNode **scope, types_t func_return_type);
 
 /* Analisa uma lista de comandos */
 int analyze_cmd_list(cmd_list_t *cmds, TableNode *scope, types_t func_return_type);
@@ -37,6 +48,9 @@ int analyze_cmd_list(cmd_list_t *cmds, TableNode *scope, types_t func_return_typ
 /* Analisa um comando individual */
 int analyze_cmd(cmd_t *cmd, TableNode *scope, types_t func_return_type);
 
+/* =========================
+ * Análise de Expressões
+ * ========================= */
 
 /* Analisa uma expressão e retorna seu tipo
  * Retorna TYPE_VOID em caso de erro */
@@ -46,7 +60,9 @@ types_t analyze_expr(expr_t *expr, TableNode *scope);
 int analyze_call_args(expr_list_t *args, TableNode *scope, 
                       TableEntry *func_entry, int line);
 
-
+/* =========================
+ * Verificações Auxiliares
+ * ========================= */
 
 /* Verifica se dois tipos são compatíveis */
 int types_compatible(types_t t1, types_t t2);
@@ -54,6 +70,9 @@ int types_compatible(types_t t1, types_t t2);
 /* Verifica se uma variável já foi declarada no escopo local */
 int check_redeclaration(TableNode *scope, char *name, int line);
 
+/* =========================
+ * Mensagens de Erro
+ * ========================= */
 
 /* Reporta erro semântico e incrementa contador */
 void semantic_error(int line, const char *format, ...);
